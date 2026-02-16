@@ -29,7 +29,7 @@ async def replay(history_file):
 
 if __name__ == "__main__":
     # init db
-    arg = input("\n 👤 START or RE or QUERY: ").lower()
+    arg = input("\n 👤 START or RE or ID or QUERY: ").lower()
 
     if arg == "start":
         name = input("\n 👤 Enter name of session: ")
@@ -38,6 +38,11 @@ if __name__ == "__main__":
     elif arg == "re":
         name = input("\n 👤 enter name of session: ")
         data = database.fetch_one_by_name(name)
+        create_json_file("agent_history_from_db.json", data[2])
+        asyncio.run(replay("agent_history_from_db.json"))
+    elif arg == "id":
+        id = input("\n 👤 enter ID of session: ")
+        data = database.fetch_one_by_id(id)
         create_json_file("agent_history_from_db.json", data[2])
         asyncio.run(replay("agent_history_from_db.json"))
     elif arg == "query":

@@ -49,6 +49,16 @@ class Database:
             print(f"No data matching {name}")
             return None
 
+    def fetch_one_by_id(self, id: str):
+        cursor = self.connection.cursor()
+        cursor.execute(f"SELECT id, name, data FROM histories where id = '{id}'")
+        data = cursor.fetchone()
+        if data:
+            return data
+        else:
+            print(f"No data matching ID: {id}")
+            return None
+
     def get_all(self):
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT id, name FROM histories")
@@ -66,4 +76,9 @@ class Database:
             "INSERT INTO histories (name, data, created_at) VALUES (?, ?, ?)",
             (name, data, now),
         )
+        self.connection.commit()
+
+    def delete_by_id(self, id: str):
+        cursor = self.connection.cursor()
+        cursor.execute(f"DELETE FROM histories where id = {id}")
         self.connection.commit()
