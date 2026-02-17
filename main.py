@@ -19,13 +19,13 @@ async def start(name: str, initial_task: str):
 
     history_data = load_file_as_string(history_file)
     database.append(name, history_data)
-    await core.stop()
+    await core.kill_browser()
 
 
 async def replay(history_file):
     core = Core(history_file=history_file)
     await core.start_replay_agent()
-    await core.stop()
+    await core.kill_browser()
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ import os
 import dotenv
 
 from lib.tools import extend_tools, extend_system_message
+from lib.utility import create_json_file
 
 dotenv.load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -41,7 +42,7 @@ class Core:
                 tools=extend_tools,
                 extend_system_message=extend_system_message,
             )
-            history: AgentHistoryList = await self.agent.run(max_steps=1)
+            history: AgentHistoryList = await self.agent.run(max_steps=2)
 
             while True:
                 user_response = input('\n 👤 New task or "q" to quit: ')
@@ -50,7 +51,7 @@ class Core:
                 self.agent.add_new_task(f"New task: {user_response}")
                 await self.agent.run()
         finally:
-            print(history)
+            create_json_file("model_dump.json", history.model_dump_json())
             self.agent.save_history(self.history_file)
 
     async def start_replay_agent(self, headless: bool = False, keep_alive=False):
@@ -75,5 +76,5 @@ class Core:
             summary_llm=None,
         )
 
-    async def stop(self):
-        await self.browser.stop()
+    async def kill_browser(self):
+        await self.browser.kill()
