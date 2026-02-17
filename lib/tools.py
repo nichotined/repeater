@@ -5,11 +5,9 @@ from browser_use import (
 )
 
 extend_tools = Tools()
-extend_system_message = (
+extend_system_message = """
+    REMEMBER when you are uncertain, ask human for confirmation before proceeding by using available tool!!!
     """
-    REMEMBER when you are uncertain you can ask human by using available tool for further confirmation, data input, validation and verification!!!
-    """
-)
 
 
 @extend_tools.action("Ask human for help with a question")
