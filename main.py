@@ -3,6 +3,7 @@ from lib.database import Database
 from lib.utility import *
 import asyncio
 
+# init db
 database = Database()
 database.connect()
 database.init_tables()
@@ -28,8 +29,16 @@ async def replay(history_file):
 
 
 if __name__ == "__main__":
-    # init db
-    arg = input("\n 👤 START or RE or ID or QUERY: ").lower()
+    arg = input(
+        """
+                \n 👤 Commands available:
+                \n START -> To create a new session
+                \n RE -> To replay previous session
+                \n ID -> To replay previous session by ID stored
+                \n QUERY -> Show all stored data
+                \n DEL -> To delete stored session by ID
+                \n Your command: """
+    ).lower()
 
     if arg == "start":
         name = input("\n 👤 Enter name of session: ")
@@ -47,3 +56,6 @@ if __name__ == "__main__":
         asyncio.run(replay("agent_history_from_db.json"))
     elif arg == "query":
         print(database.get_all())
+    elif arg == "del":
+        id = input("\n 👤 enter ID of session to be deleted: ")
+        database.delete_by_id(id)

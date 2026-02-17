@@ -2,3 +2,4 @@
 local.db
 agent_history_from_db.json
 agent_history.json
+.venv
