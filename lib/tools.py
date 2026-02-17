@@ -6,7 +6,7 @@ from browser_use import (
 
 extend_tools = Tools()
 extend_system_message = (
-    "REMEMBER you can ask human for question, only do what human asked!!!"
+    "REMEMBER you can ask human by using available tool for validation and verification!!!"
 )
 
 
