@@ -41,6 +41,7 @@ class Core:
                 llm=self.llm,
                 tools=extend_tools,
                 extend_system_message=extend_system_message,
+                use_judge=False,
             )
             history: AgentHistoryList = await self.agent.run(max_steps=2)
 

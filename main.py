@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     if arg == "start":
         name = input("\n 👤 Enter name of session: ")
-        initial_task = input("\n 👤 Enter Initial task: ")
+        initial_task = input("\n 👤 Enter Initial task (e.g. Open google.com): ")
         asyncio.run(start(name, initial_task))
     elif arg == "re":
         name = input("\n 👤 enter name of session: ")
