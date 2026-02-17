@@ -6,7 +6,9 @@ from browser_use import (
 
 extend_tools = Tools()
 extend_system_message = (
-    "REMEMBER you can ask human by using available tool for validation and verification!!!"
+    """
+    REMEMBER you can ask human by using available tool for data input, further confirmation, validation and verification!!!
+    """
 )
 
 
