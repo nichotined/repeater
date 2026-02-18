@@ -1,9 +1,13 @@
 .env
 local.db
 agent_history_from_db.json
+agent_history_rerun.json
 agent_history.json
 .venv
 lib/__pycache__
 model_dump.json
 sessions
 videos
+conversation
+debug.json
+__pycache__
