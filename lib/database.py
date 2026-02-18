@@ -82,3 +82,8 @@ class Database:
         cursor = self.connection.cursor()
         cursor.execute(f"DELETE FROM histories where id = {id}")
         self.connection.commit()
+
+    def delete_by_name(self, name: str):
+        cursor = self.connection.cursor()
+        cursor.execute(f"DELETE FROM histories where name = {name}")
+        self.connection.commit()

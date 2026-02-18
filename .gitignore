@@ -3,6 +3,7 @@ local.db
 agent_history_from_db.json
 agent_history_rerun.json
 agent_history.json
+agent_history_valid.json
 .venv
 lib/__pycache__
 model_dump.json

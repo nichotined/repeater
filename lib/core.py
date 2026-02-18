@@ -61,6 +61,8 @@ class Core:
                 task=self.initial_task,
                 llm=self.llm,
                 tools=extend_tools,
+                use_thinking=False,
+                flash_mode=True,
                 extend_system_message=extend_system_message,
                 use_judge=False,
                 save_conversation_path="sessions/conversation",

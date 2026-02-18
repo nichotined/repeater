@@ -42,13 +42,13 @@ async def replay(name, history_file):
 
 if __name__ == "__main__":
     try:
+        records = database.get_all()
         arg = questionary.select(
             message="👤 Select command",
             choices=[
                 ("Create a new session"),
-                ("Replay previous session"),
-                ("Replay previous session by ID stored"),
-                ("Delete stored session by ID"),
+                ("Replay stored session"),
+                ("Delete stored session by Name"),
                 ("Exit"),
             ],
         ).unsafe_ask()
@@ -58,8 +58,7 @@ if __name__ == "__main__":
                 "👤 Enter Initial task (e.g. Open google.com): "
             ).unsafe_ask()
             asyncio.run(start(name, initial_task), debug=True)
-        elif arg == "Replay previous session":
-            records = database.get_all()
+        elif arg == "Replay stored session":
             if not records:
                 print("No previous session found")
                 exit()
@@ -78,16 +77,19 @@ if __name__ == "__main__":
                     replay(name, "agent_history_from_db.json"),
                     debug=True,
                 )
-        elif arg == "Replay previous session by ID stored":
-            print(database.get_all())
-            id = questionary.text("👤 enter ID of session: ").unsafe_ask()
-            data = database.fetch_one_by_id(id)
-            create_json_file("agent_history_from_db.json", data[2])
-            asyncio.run(replay(f"session_{id}", "agent_history_from_db.json"))
-        elif arg == "del":
-            print(database.get_all())
-            id = questionary.text("👤 enter ID of session to be deleted: ").unsafe_ask()
-            database.delete_by_id(id)
+        elif arg == "Delete stored session by Name":
+            if not records:
+                print("No previous session found")
+                exit()
+
+            names = [data[1] for data in database.get_all()]
+
+            name = questionary.select(
+                message="👤 Select session to replay",
+                choices=names,
+            ).unsafe_ask()
+
+            database.delete_by_name(name)
     except KeyboardInterrupt:
         print("Bye")
         exit()
