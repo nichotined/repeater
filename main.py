@@ -34,9 +34,8 @@ async def replay(name, history_file):
         identifier = await questionary.text(
             "👤 Enter identifier of session to be stored: "
         ).ask_async()
-        database.append(
-            f"rerun_{name}_{identifier if identifier else 'unknown'}", history_data
-        )
+        if identifier != "":
+            database.append(f"{name}_{identifier}", history_data)
         await core.kill_browser()
 
 
@@ -49,6 +48,7 @@ if __name__ == "__main__":
                 ("Create a new session"),
                 ("Replay stored session"),
                 ("Delete stored session by Name"),
+                ("Update stored session Name"),
                 ("Exit"),
             ],
         ).unsafe_ask()
@@ -85,11 +85,25 @@ if __name__ == "__main__":
             names = [data[1] for data in database.get_all()]
 
             name = questionary.select(
-                message="👤 Select session to replay",
+                message="👤 Select session to be deleted",
                 choices=names,
             ).unsafe_ask()
 
             database.delete_by_name(name)
+
+        elif arg == "Update stored session Name":
+            if not records:
+                print("No previous session found")
+                exit()
+
+            names = [data[1] for data in database.get_all()]
+
+            name = questionary.select(
+                message="👤 Select session to be renamed",
+                choices=names,
+            ).unsafe_ask()
+            new_name = questionary.text("👤 Enter new name of session: ").unsafe_ask()
+            database.update_name_by_name(name, new_name)
     except KeyboardInterrupt:
         print("Bye")
         exit()

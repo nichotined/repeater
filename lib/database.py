@@ -85,5 +85,12 @@ class Database:
 
     def delete_by_name(self, name: str):
         cursor = self.connection.cursor()
-        cursor.execute(f"DELETE FROM histories where name = {name}")
+        cursor.execute(f"DELETE FROM histories where name = '{name}'")
+        self.connection.commit()
+
+    def update_name_by_name(self, old_name: str, new_name: str):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            f"UPDATE histories SET name = '{new_name}' WHERE name = '{old_name}'"
+        )
         self.connection.commit()
