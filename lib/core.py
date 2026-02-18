@@ -6,17 +6,16 @@ from browser_use import (
     Browser,
     ChatGoogle,
 )
+from browser_use.agent.views import AgentStepInfo
 import os
 import dotenv
 import questionary
 
 from lib.tools import extend_tools, extend_system_message
-from lib.utility import create_json_file
+from lib.utility import *
 
 dotenv.load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-
-# TODO: Handle resetting the browser
 
 
 class Core:
@@ -89,7 +88,7 @@ class Core:
             tools=extend_tools,
             extend_system_message=extend_system_message,
             use_judge=False,
-            save_conversation_path="conversation",
+            save_conversation_path="sessions/conversation",
         )
         agent_history_list = self.agent.history.load_from_file(
             self.history_file, self.agent.AgentOutput
@@ -107,12 +106,33 @@ class Core:
             )
             # TODO when failed, i want to ask user and continue
         except Exception as e:
-            print(self.agent.history.last_action())
-            import pdb
+            last_step_number = get_step_number(e.args[0])
+            print(last_step_number)
 
-            pdb.set_trace()
-            self.agent.add_new_task(f"Error: {e}")
-            await self.agent.run()
+            json_history = load_json_file("agent_history_from_db.json")
+            json_steps: list = json_history.get("history")
+            valid_steps = []
+
+            for step in json_steps:
+                if step["metadata"]["step_number"] < last_step_number:
+                    valid_steps.append(step)
+            json_steps = valid_steps
+            new_history = {"history": json_steps}
+            create_json_file("agent_history_valid.json", json.dumps(new_history))
+            new_history_agent = self.agent.history.load_from_file(
+                Path("agent_history_valid.json"), self.agent.AgentOutput
+            )
+            self.agent.history = new_history_agent
+            print(self.agent.history.number_of_steps())
+            self.agent.state.n_steps = last_step_number
+
+            new_task = await questionary.text(
+                "👤 Last step was failed. Enter new task? or 'q' to quit: ",
+                multiline=True,
+            ).ask_async()
+            if new_task != "q":
+                self.agent.add_new_task(new_task)
+                await self.agent.run()
         finally:
             self.agent.save_history("agent_history_rerun.json")
 

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import re
 
 
 def load_json_file(path):
@@ -16,3 +17,10 @@ def create_json_file(path: str, data: str):
     json_path = Path(path)
     with open(json_path, "w") as f:
         f.write(data)
+
+
+def get_step_number(text: str) -> int | None:
+    match = re.search(r"Step\s+(\d+)", text)
+    if match:
+        return int(match.group(1))
+    return None

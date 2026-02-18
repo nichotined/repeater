@@ -31,7 +31,12 @@ async def replay(name, history_file):
         await core.start_replay_agent()
     finally:
         history_data = load_file_as_string("agent_history_rerun.json")
-        database.append(f"rerun_{name}", history_data)
+        identifier = await questionary.text(
+            "👤 Enter identifier of session to be stored: "
+        ).ask_async()
+        database.append(
+            f"rerun_{name}_{identifier if identifier else 'unknown'}", history_data
+        )
         await core.kill_browser()
 
 
@@ -52,7 +57,7 @@ if __name__ == "__main__":
             initial_task = questionary.text(
                 "👤 Enter Initial task (e.g. Open google.com): "
             ).unsafe_ask()
-            asyncio.run(start(name, initial_task))
+            asyncio.run(start(name, initial_task), debug=True)
         elif arg == "Replay previous session":
             records = database.get_all()
             if not records:
@@ -69,7 +74,10 @@ if __name__ == "__main__":
             data = database.fetch_one_by_name(name)
             if data:
                 create_json_file("agent_history_from_db.json", data[2])
-                asyncio.run(replay(name, "agent_history_from_db.json"))
+                asyncio.run(
+                    replay(name, "agent_history_from_db.json"),
+                    debug=True,
+                )
         elif arg == "Replay previous session by ID stored":
             print(database.get_all())
             id = questionary.text("👤 enter ID of session: ").unsafe_ask()
